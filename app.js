@@ -14,7 +14,7 @@ var app = express();
 
 
 // view engine setup
-var db = mongojs('mongodb://pratik:pratik@ds059496.mlab.com:59496/heroku_9rflxd4s', ['details']);
+var db = mongojs('mongodb://pratik:pratik@ds133438.mlab.com:33438/heroku_9rvcpdq9', ['users']);
 
 app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'ejs');
@@ -52,19 +52,10 @@ app.post('/gather', (request, response) => {
 
   // If the user entered digits, process their request
   if (request.body.Digits) {
-    db.details.find({"zip": "46665"}, function(err, data) 
+    twiml.say('wellcome %s to help desk');
+    db.users.find({"userid": request.body.Digits}, function(err, data) 
   {
-    if (data) 
-    {
-      console.log(data.number);
-    twiml.say('wellcome %s to help desk', data.number); 
-    }
-   else
-   {
-        twiml.say('Sorry, invalid userid').pause();
-        twiml.redirect('/voice');
-
-    }
+    twiml.say('wellcome %s to help desk', data.name);
      
    });
   }
