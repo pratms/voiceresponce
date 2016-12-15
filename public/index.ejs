@@ -1,0 +1,57 @@
+<!Doctype html>
+<html ng-app="myApp">
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+ <script src="javascripts/angular.js"></script>
+ <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+
+</head>
+<body>
+
+	<div class= "container "  ng-controller="myController" style="background-color:rgba(96, 125, 139, 0.05);">
+		<h2 style="text-align:center"><i>"The Power of Feedback" in the Review of Educational Research"</i></h2>
+		<div class="row">
+	<form class="form-inline col-md-offset-4 " style = "margin-top:8%">
+  <div class="form-group">
+    <label for="exampleInput">Mobile.No</label>
+    <input type="text" class="form-control" required placeholder="Eg:+1201920****" aria-describedby="sizing-addon3" name="search" ng-model="formData.search">
+  </div>
+  <button type="submit" ng-click="SendData()" class="btn btn-primary">Ask Feedback</button>
+  <a href="" ng-click="ReceiveData()" ng-model="show" class="btn btn-primary">Previous Records</a>
+  <h3 ng-show="formData.search" >{{success}}</h3>
+</form>
+
+ 
+<div class="col-md-8 col-md-offset-2" style = "margin-top:20px" ng-show="show">
+<form class="form-inline" >
+  <div class="form-group">
+  
+    <input type="text" class="form-control" required placeholder="Search" aria-describedby="sizing-addon3"  ng-model="search">
+  </div>
+  </form>
+<table class= "table table-hover" >
+					<thead>
+						<tr>
+							<th>Mobile.No</th>
+							<th>Area Code</th>
+							<th>User Response</th>
+							
+						</tr>
+						<tbody>
+							<tr ng-repeat="employee in data|filter:search">
+								<td>{{employee.number}}</td>
+								<td>{{employee.zip}}</td>
+								<td>{{employee.response}}</td>
+								
+							</tr>
+
+						</tbody>	
+					</thead>
+				</table>
+			</div>
+	</div>
+</div>
+</body>
+
+</html>
