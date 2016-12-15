@@ -49,19 +49,19 @@ app.post('/voice', (request, response) =>
 app.post('/gather', (request, response) => {
   // Use the Twilio Node.js SDK to build an XML response
   var twiml = new twilio.TwimlResponse();
-
-  // If the user entered digits, process their request
-  if (request.body.Digits) {
-    twiml.say('wellcome %s to help desk');
-    db.users.find({"userid": request.body.Digits}, function(err, data) 
+   db.users.find({"userid": request.body.Digits}, function(err, data) 
   {
-    twiml.say('wellcome %s to help desk', data.name);
+    twiml.say('wellcome' + data.name +'to help desk');
      
    });
-  }
-   else {
-    twiml.redirect('/voice');
-  }
+  // If the user entered digits, process their request
+  // if (request.body.Digits) {
+  //   twiml.say('wellcome %s to help desk');
+    
+  // }
+  //  else {
+  //   twiml.redirect('/voice');
+  // }
 
   // Render the response as XML in reply to the webhook request
   response.type('text/xml');
