@@ -49,14 +49,23 @@ app.post('/voice', (request, response) =>
 app.post('/gather', (request, response) => {
   // Use the Twilio Node.js SDK to build an XML response
   var twiml = new twilio.TwimlResponse();
-
-  // If the user entered digits, process their request
-  if (request.body.Digits) {
-    db.users.findOne({"userid": request.body.Digits}, function(err, data) 
-  {
-    twiml.say('wellcome %s to help desk', data.name);
+   db.users.findOne({userid: request.body.Digits }, function(err, data) 
+                   
+    {
      
-   });
+  
+  if (data) {
+
+    twiml.gather({ 
+    numDigits: 1,
+    action: '/gather1'
+    
+  }, 
+  (gatherNode) => {
+    gatherNode.say('wellcome,'+data.name+'press 1 for course information, press 2 for grades.');
+  });
+  twiml.redirect('/voice');
+ 
   }
    else {
     twiml.redirect('/voice');
@@ -65,16 +74,37 @@ app.post('/gather', (request, response) => {
   // Render the response as XML in reply to the webhook request
   response.type('text/xml');
   response.send(twiml.toString());
+      });
 });
+app.post('/gather1', (request, response) => {
+  // Use the Twilio Node.js SDK to build an XML response
+  var twiml = new twilio.TwimlResponse();
+  if(request.body.Digits)
+{
+      switch (request.body.Digits) {
+      case '1': twiml.say('couser information'); break;
+      case '2': twiml.say('wellcome to course grades!'); break;
+      default: 
+        twiml.say('Sorry, I don\'t understand that choice.').pause();
+        twiml.redirect('/voice');
+        break;
+    }
 
 
- // console.log("here");
- //    db.users.findOne({"userid": '11121'}, function(err, data) 
- //    {
- //  console.log(data);
- //    console.log('wellcome %s to help desk', data.name);
-     
- //   });
+
+} 
+
+   else {
+    twiml.redirect('/voice');
+  }
+
+  // Render the response as XML in reply to the webhook request
+  response.type('text/xml');
+  response.send(twiml.toString());
+      });
+
+
+ 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
