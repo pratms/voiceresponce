@@ -49,25 +49,32 @@ app.post('/voice', (request, response) =>
 app.post('/gather', (request, response) => {
   // Use the Twilio Node.js SDK to build an XML response
   var twiml = new twilio.TwimlResponse();
-   db.users.find({"userid": request.body.Digits}, function(err, data) 
+
+  // If the user entered digits, process their request
+  if (request.body.Digits) {
+    db.users.findOne({"userid": request.body.Digits}, function(err, data) 
   {
-    twiml.say('wellcome' + data.name +'to help desk');
+    twiml.say('wellcome %s to help desk', data.name);
      
    });
-  // If the user entered digits, process their request
-  // if (request.body.Digits) {
-  //   twiml.say('wellcome %s to help desk');
-    
-  // }
-  //  else {
-  //   twiml.redirect('/voice');
-  // }
+  }
+   else {
+    twiml.redirect('/voice');
+  }
 
   // Render the response as XML in reply to the webhook request
   response.type('text/xml');
   response.send(twiml.toString());
 });
 
+
+ // console.log("here");
+ //    db.users.findOne({"userid": '11121'}, function(err, data) 
+ //    {
+ //  console.log(data);
+ //    console.log('wellcome %s to help desk', data.name);
+     
+ //   });
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
