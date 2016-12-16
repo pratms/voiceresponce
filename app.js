@@ -55,6 +55,7 @@ app.post('/gather', (request, response) => {
      
   
   if (data) {
+    twiml.say('wellcome,'+data.name);
 
     twiml.gather({ 
     numDigits: 1,
@@ -62,7 +63,7 @@ app.post('/gather', (request, response) => {
     
   }, 
   (gatherNode) => {
-    gatherNode.say('wellcome,'+data.name+'press 1 for course information, press 2 for grades.');
+    gatherNode.say('press 1 for course information, press 2 for grades.');
   });
   twiml.redirect('/voice');
  
@@ -82,7 +83,15 @@ app.post('/gather1', (request, response) => {
   if(request.body.Digits)
 {
       switch (request.body.Digits) {
-      case '1': twiml.say('couser information'); break;
+      case '1': 
+         twiml.say('Hi there!Please speak your course number,for example cs 641 after the beep -Get ready!')
+        .record({
+            transcribe: true,
+            maxLength:30,
+            action:'/recording'
+        });
+
+       break;
       case '2': twiml.say('wellcome to course grades!'); break;
       default: 
         twiml.say('Sorry, I don\'t understand that choice.').pause();
@@ -104,7 +113,34 @@ app.post('/gather1', (request, response) => {
       });
 
 
- 
+app.post('/recording', (request,response){
+var twiml = new twilio.TwimlResponse();
+var text = request.body.TranscriptionText;
+twiml.say('wellcome to course'+text);
+// if(request.body.Digits)
+// {
+//       switch (request.body.Digits) 
+//       {
+//       case '2': twiml.say('wellcome to course grades!'); break;
+//       default: 
+//         twiml.say('Sorry, I don\'t understand that choice.').pause();
+//         twiml.redirect('/voice');
+//         break;
+//     }
+
+
+
+// } 
+
+//    else {
+//     twiml.redirect('/voice');
+//   }
+
+  // Render the response as XML in reply to the webhook request
+  response.type('text/xml');
+  response.send(twiml.toString());
+
+});
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
