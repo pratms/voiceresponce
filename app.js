@@ -140,7 +140,7 @@ app.post('/gather1', (request, response) => {
     switch (request.body.Digits) {
       case '1': 
 
-      twiml.say()
+ 
       twiml.gather({
         method:"post",
         numDigits:3,
@@ -148,7 +148,7 @@ app.post('/gather1', (request, response) => {
 
       },
       (gatherNode) => {
-        gatherNode.say('Hi there! Please enter your course number,for example 641 ');
+        gatherNode.say('Hi there! Please enter your course number, for example 641 ');
       });
 
 
@@ -224,7 +224,7 @@ else {
 app.post('/courses', (request,response) => {
 var twiml = new twilio.TwimlResponse();
 
-db.courses.findOne({courseid: "643"}, function(err, data) 
+db.courses.findOne({courseid: request.body.Digits}, function(err, data) 
   {
   
   
@@ -232,8 +232,9 @@ db.courses.findOne({courseid: "643"}, function(err, data)
   twiml.say(data.courseinfo).pause();
   twiml.say("Lecturer"+data.courseprof).pause();
   twiml.say("course schedule"+data.coursetime).pause();
+ 
+  
 
-   });
   twiml.gather({
   timeout:5,
   method:"post",
@@ -244,12 +245,13 @@ db.courses.findOne({courseid: "643"}, function(err, data)
 (gatherNode) => {
   gatherNode.say('Press 9 to go back to previous menu');
 });
-    response.type('text/xml');
+response.type('text/xml');
   response.send(twiml.toString());
 
+   });
+    
+
                 });
-
-
 
 
 app.post('/grades', (request,response) => {
@@ -282,7 +284,7 @@ db.users.findOne({userid: request.param('userid')}, function(err, data)
     response.type('text/xml');
   response.send(twiml.toString());
 
-                });
+  });
 
   
 });
