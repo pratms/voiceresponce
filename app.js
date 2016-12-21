@@ -14,7 +14,7 @@ var app = express();
 
 
 // view engine setup
-var db = mongojs('mongodb://pratik:pratik@ds133438.mlab.com:33438/heroku_9rvcpdq9', ['users','response','news']);
+var db = mongojs('mongodb://pratik:pratik@ds133438.mlab.com:33438/heroku_9rvcpdq9', ['users','response','news','courses']);
 
 app.set('views', path.join(__dirname, 'public'));
 app.set('view engine', 'ejs');
@@ -139,16 +139,17 @@ app.post('/gather1', (request, response) => {
 
     switch (request.body.Digits) {
       case '1': 
-      twiml.say('Hi there! Please speak your course number,for example cs 641 after the beep,-Get ready!')
-        .record({
-      transcribe:true,
-      timeout:5,
-      maxLength:30,
-      transcribeCallback:'/transcribe',
-      action:'/recording'
 
+      twiml.say()
+      twiml.gather({
+        method:"post",
+        numDigits:3,
+        action:"/courses?userid="+id
 
-        })
+      },
+      (gatherNode) => {
+        gatherNode.say('Hi there! Please enter your course number,for example 641 ');
+      });
 
 
 break;
@@ -218,6 +219,38 @@ else {
   response.type('text/xml');
   response.send(twiml.toString());
 });
+
+
+app.post('/courses', (request,response) => {
+var twiml = new twilio.TwimlResponse();
+
+db.courses.findOne({courseid: request.body.Digits}, function(err, data) 
+  {
+  
+  
+  twiml.say("1 "+data.coursename).pause();
+  twiml.say(data.courseinfo).pause();
+  twiml.say("Lecturer"+data.courseprof).pause();
+  twiml.say("course schedule"+data.coursetime).pause();
+
+   });
+  twiml.gather({
+  timeout:5,
+  method:"post",
+  numDigits:1,
+  action:"/gather?userid="+request.param('userid')
+
+},
+(gatherNode) => {
+  gatherNode.say('Press 9 to go back to previous menu');
+});
+    response.type('text/xml');
+  response.send(twiml.toString());
+
+                });
+
+
+
 
 app.post('/grades', (request,response) => {
 var twiml = new twilio.TwimlResponse();
