@@ -168,7 +168,7 @@ case '3':  twiml.say('Rate between 1 to 5, one being the lowest and five as high
 twiml.gather({
   method:"post",
   numDigits:1,
-  action:"/survey"
+  action:"/survey?userid="+id
 
 },
 (gatherNode) => {
@@ -309,7 +309,7 @@ else{
 twiml.gather({
   method:"post",
   numDigits:1,
-  action:"/survey2"
+  action:"/survey2?userid="+request.param('userid')
 
 },
 (gatherNode) => {
@@ -346,7 +346,16 @@ else{
    twiml.say('Invalid response try again!').hangup(); 
    
 }
+ twiml.gather({
+  timeout:1,
+  method:"post",
+  numDigits:1,
+  action:"/gather?userid="+request.param('userid')
 
+},
+(gatherNode) => {
+  gatherNode.say('Press 9 to go back to previous menu');
+});
    
   response.type('text/xml');
   response.send(twiml.toString());
