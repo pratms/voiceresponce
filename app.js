@@ -148,7 +148,7 @@ app.post('/gather1', (request, response) => {
 
       },
       (gatherNode) => {
-        gatherNode.say('Hi there! Please enter your course number, for example 641 ');
+        gatherNode.say('Hi there! Please enter your course number, for example 643 ');
       });
 
 
@@ -225,6 +225,7 @@ app.post('/courses', (request,response) => {
 var twiml = new twilio.TwimlResponse();
 
 db.courses.findOne({courseid: request.body.Digits}, function(err, data) 
+
   {
   
   
@@ -233,8 +234,10 @@ db.courses.findOne({courseid: request.body.Digits}, function(err, data)
   twiml.say("Lecturer"+data.courseprof).pause();
   twiml.say("course schedule"+data.coursetime).pause();
  
-  
 
+                   
+
+    
   twiml.gather({
   timeout:5,
   method:"post",
