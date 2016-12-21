@@ -256,7 +256,7 @@ db.users.findOne({userid: request.param('userid')}, function(err, data)
 app.post('/survey', (request,response) => {
 var twiml = new twilio.TwimlResponse();
 if(request.body.Digit!=0 && request.body.Digits <= 5 ){   
-twiml.say('Question 2').hangup();  
+twiml.say('Question 2');  
 
    
 db.response.insert( { response: request.body.Digits, queid: "1"  } );
