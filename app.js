@@ -324,7 +324,7 @@ twiml.gather({
 app.post('/survey2', (request,response) => {
 var twiml = new twilio.TwimlResponse();
 if(request.body.Digit!=0 && request.body.Digits <= 5 ){   
-twiml.say('Thank you for your response good bye!').hangup();  
+twiml.say('Thank you for your response good bye!');  
 var accountSid = 'AC5b3a64ad844dfbb918812897bcf2a1ce'; 
 var authToken = '8c055fe15f07533ff69388be72b93b16';  
 var client = new twilio.RestClient(accountSid, authToken);
